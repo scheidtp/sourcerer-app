@@ -135,7 +135,7 @@ object Logger {
         }
     }
 
-    fun printCommit(commitMessage: String, commitHash: String,
+    fun printCommit(totalCommitCount: Int = -1, commitCount: Int = -1, commitMessage: String, commitHash: String,
                     percents: Double) {
         if (!SILENT) {
             val percentsStr = percents.format(6, 2)
@@ -143,7 +143,12 @@ object Logger {
             val messageTrim = if (commitMessage.length > 59) {
                 commitMessage.substring(0, 56).plus("...")
             } else commitMessage
-            println(" [$percentsStr%] * $hash $messageTrim")
+
+            if (totalCommitCount > 0) {
+                println(" [$commitCount / $totalCommitCount -> $percentsStr%] * $hash $messageTrim")
+            } else {
+                println(" [$percentsStr%] * $hash $messageTrim")
+            }
         }
     }
 

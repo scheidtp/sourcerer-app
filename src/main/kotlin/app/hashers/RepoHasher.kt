@@ -19,6 +19,7 @@ import app.utils.batch
 import org.eclipse.jgit.api.Git
 import java.io.File
 import java.io.IOException
+import java.util.function.Consumer
 import kotlin.collections.HashSet
 
 class RepoHasher(private val api: Api,
@@ -39,6 +40,10 @@ class RepoHasher(private val api: Api,
 
             val (rehashes, authors, commitsCount) =
                 CommitCrawler.fetchRehashesAndAuthors(git)
+            var totalCommitCount = 0;
+            commitsCount.values.forEach(Consumer { count: Int -> totalCommitCount+= count })
+
+            Logger.info { "Total commit count: $totalCommitCount" }
             localRepo.parseGitConfig(git.repository.config)
             val serverRepo = initServerRepo(localRepo, rehashes.last,
                 processEntryId)
@@ -99,7 +104,7 @@ class RepoHasher(private val api: Api,
             }
             if (BuildConfig.DISTANCES_ENABLED) {
                 val userEmails = configurator.getUser().emails.map { it.email }.toHashSet()
-                val pathsObservable = CommitCrawler.getJGitObservable(git,
+                val pathsObservable = CommitCrawler.getJGitObservable(git, totalCommitCount,
                         extractCommit = false, extractDate = true,
                         extractDiffs = false, extractEmail = true,
                         extractPaths = true)

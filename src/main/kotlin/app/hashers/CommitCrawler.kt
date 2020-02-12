@@ -168,7 +168,7 @@ object CommitCrawler {
             val perc = if (totalCommitCount != 0) {
                 (commitCount.toDouble() / totalCommitCount) * 100
             } else 0.0
-            Logger.printCommit(commit.shortMessage, commit.name, perc)
+            Logger.printCommit(totalCommitCount, commitCount, commit.shortMessage, commit.name, perc)
 
             val email = commit.authorIdent.emailAddress.toLowerCase()
             if (filteredEmails != null && !filteredEmails.contains(email)) {
