@@ -130,7 +130,10 @@ class ServerApi (private val configurator: Configurator) : Api {
 
         try {
             Logger.debug { "Request $requestName initialized" }
-            val (_, res, result) = request.responseString()
+            val (_, res, result) = request
+                    .timeout(BuildConfig.API_TIMEOUT.toInt())
+                    .timeoutRead(BuildConfig.API_READ_TIMEOUT.toInt())
+                    .responseString()
             val (_, e) = result
             if (e == null) {
                 Logger.debug { "Request $requestName success" }
